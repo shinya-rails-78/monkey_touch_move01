@@ -294,39 +294,45 @@ if (game.input.left) {
        };
 
 
-
-
-/* if(monkey.intersect(bear)) {
- monkey.x = 0;//衝突したら初期位置に戻る 
- } */
 });
    
 /**
          * タッチされると消える処理を実現するために、
          * touchstart イベントが起こったとき、クマが消える処理をリスナとして追加する。
          */
+        var xspeed = 0;// 横移動のスピードを定義
+        var yspeed = 0;// 縦移動のスピードを定義
 
-pig1.addEventListener("touchstart", function(){
-            /**
-             * クマを game.rootScene から削除する。
-             * Group#addChild の逆は Group#removeChild。
-             */
-            game.rootScene.removeChild(pig1);
-        });
-pig2.addEventListener("touchstart", function(){
-            /**
-             * クマを game.rootScene から削除する。
-             * Group#addChild の逆は Group#removeChild。
-             */
-            game.rootScene.removeChild(pig2);
+        var xposition;// クリック座標(横)保存用の変数
+        var yposition;// クリック座標(縦)保存用の変数
+        
+        game.rootScene.addEventListener(Event.ENTER_FRAME, function() {
+            if (monkey.x == xposition){
+                xspeed = 0;
+            }
+            if (monkey.y == yposition){
+                yspeed = 0;
+            }
+
+            monkey.x += xspeed; // キャラクターの横座標を右にxspeedずつずらす
+            monkey.y += yspeed;
         });
 
-  bear.addEventListener("touchstart", function(){
-            /**
-             * クマを game.rootScene から削除する。
-             * Group#addChild の逆は Group#removeChild。
-             */
-            game.rootScene.removeChild(bear);
+        // タッチすると発動
+        game.rootScene.addEventListener(Event.TOUCH_END, function(e) {
+            // タッチイベントは、タッチした座標をe.x , e.y として取ることができます。
+            xposition = Math.round(e.x);
+            yposition = Math.round(e.y);
+            if (e.x > monkey.x) { // タッチした横位置が当たり判定よりも右側
+                xspeed = 3; // キャラクターのスピードを1にする
+            } else {
+                xspeed = -3; // キャラクターのスピードを-1(左方向に１)にする
+            }
+            if (e.y > monkey.y) { // タッチした縦位置が当たり判定よりも下側
+                yspeed = 3; // キャラクターのスピードを1にする
+            } else {
+                yspeed = -3; // キャラクターのスピードを-1(上方向に１)にする
+            }
         });
     };
 
